@@ -36,13 +36,14 @@ public class ConfigFacadeApi {
         // java入口方法
         // behaviors.add(new Behavior("com.alibaba.repeater.console.service.impl.RegressServiceImpl", "getRegress"));
 //        behaviors.add(new Behavior("com.hellobike.bioauth.service.application.AppBioAuthCoreServiceImpl", "queryUserBioAuthStatus"));
+        behaviors.add(new Behavior("hello.GreetingController", "greeting"));
 
         config.setJavaEntranceBehaviors(behaviors);
         List<Behavior> subBehaviors = Lists.newArrayList();
         // java调用插件
-        subBehaviors.add(new Behavior("com.alibaba.repeater.console.service.impl.RegressServiceImpl", "getRegressInner"));
-        subBehaviors.add(new Behavior("com.alibaba.repeater.console.service.impl.RegressServiceImpl", "findPartner"));
-        subBehaviors.add(new Behavior("com.alibaba.repeater.console.service.impl.RegressServiceImpl", "slogan"));
+//        subBehaviors.add(new Behavior("com.alibaba.repeater.console.service.impl.RegressServiceImpl", "getRegressInner"));
+//        subBehaviors.add(new Behavior("com.alibaba.repeater.console.service.impl.RegressServiceImpl", "findPartner"));
+//        subBehaviors.add(new Behavior("com.alibaba.repeater.console.service.impl.RegressServiceImpl", "slogan"));
         config.setJavaSubInvokeBehaviors(subBehaviors);
         config.setUseTtl(true);
         return RepeaterResult.builder().success(true).message("operate success").data(config).build();

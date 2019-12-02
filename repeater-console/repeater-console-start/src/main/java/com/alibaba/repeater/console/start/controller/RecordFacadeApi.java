@@ -21,12 +21,27 @@ public class RecordFacadeApi {
     @Resource
     private RecordService recordService;
 
+    /**
+     * 获取录制记录
+     *
+     * @param appName
+     * @param traceId
+     * @return
+     */
     @RequestMapping(value = "record/{appName}/{traceId}", method = RequestMethod.GET)
     public RepeaterResult<String> getWrapperRecord(@PathVariable("appName") String appName,
                                                    @PathVariable("traceId") String traceId) {
         return recordService.get(appName, traceId);
     }
 
+    /**
+     * 触发回放
+     *
+     * @param appName
+     * @param traceId
+     * @param request
+     * @return
+     */
     @RequestMapping(value = "repeat/{appName}/{traceId}", method = RequestMethod.GET)
     public RepeaterResult<String> repeat(@PathVariable("appName") String appName,
                                          @PathVariable("traceId") String traceId,
@@ -44,6 +59,12 @@ public class RecordFacadeApi {
         return recordService.saveRepeat(body);
     }
 
+    /**
+     * 获取回放结果
+     *
+     * @param repeatId
+     * @return
+     */
     @RequestMapping(value = "repeat/callback/{repeatId}", method = RequestMethod.GET)
     public RepeaterResult<RepeatModel> callback(@PathVariable("repeatId") String repeatId) {
         return recordService.callback(repeatId);

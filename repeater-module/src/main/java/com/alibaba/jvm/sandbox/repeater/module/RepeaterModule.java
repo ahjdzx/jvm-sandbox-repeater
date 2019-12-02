@@ -1,7 +1,5 @@
 package com.alibaba.jvm.sandbox.repeater.module;
 
-import com.alibaba.fastjson.JSONObject;
-import com.alibaba.fastjson.support.hsf.HSFJSONUtils;
 import com.alibaba.jvm.sandbox.api.Information;
 import com.alibaba.jvm.sandbox.api.Information.Mode;
 import com.alibaba.jvm.sandbox.api.Module;
@@ -43,8 +41,6 @@ import com.alibaba.jvm.sandbox.repeater.plugin.exception.PluginLifeCycleExceptio
 import com.alibaba.jvm.sandbox.repeater.plugin.spi.InvokePlugin;
 import com.alibaba.jvm.sandbox.repeater.plugin.spi.Repeater;
 import com.alibaba.jvm.sandbox.repeater.plugin.spi.SubscribeSupporter;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import org.apache.commons.lang3.StringUtils;
 import org.kohsuke.MetaInfServices;
 import org.slf4j.Logger;
@@ -257,28 +253,13 @@ public class RepeaterModule implements Module, ModuleLifecycle {
             return;
         }
 
-        Gson gson = new GsonBuilder().create();
-//        // 将Java对象序列化为Json字符串
-//        String objectToJson = gson.toJson(initUser());
-//        System.out.println(objectToJson);
-        // 将Json字符串反序列化为Java对象
-
-
         try {
-            RepeaterConfig config = gson.fromJson(data, RepeaterConfig.class);
-            System.out.println(config);
-
-
-//            RepeaterConfig config = SerializerWrapper.jsonDeserialize(data, RepeaterConfig.class);
-            // RepeaterConfig config = SerializerWrapper.hessianDeserialize(data, RepeaterConfig.class);
+            RepeaterConfig config = SerializerWrapper.hessianDeserialize(data, RepeaterConfig.class);
             noticeConfigChange(config);
             writer.write("config push success");
-//        } catch (SerializeException e) {
-//            writer.write("invalid request, cause deserialize config failed, reason = {" + e.getMessage() + "}");
-        } catch (Exception e) {
-            writer.write(e.getMessage());
+        } catch (SerializeException e) {
+            writer.write("invalid request, cause deserialize config failed, reason = {" + e.getMessage() + "}");
         }
-        log.info(req.toString());
     }
 
     /**

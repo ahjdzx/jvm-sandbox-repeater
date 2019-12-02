@@ -1,8 +1,8 @@
 CREATE DATABASE IF NOT EXISTS repeater
   DEFAULT CHARSET utf8
   COLLATE utf8_general_ci;
-DROP TABLE IF EXISTS recordModel;
-CREATE TABLE recordModel (
+DROP TABLE IF EXISTS record;
+CREATE TABLE record (
   id             BIGINT(20)   NOT NULL AUTO_INCREMENT PRIMARY KEY
   COMMENT '主键',
   gmt_create     DATETIME     NOT NULL
