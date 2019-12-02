@@ -70,6 +70,7 @@ public class JarFileLifeCycleManager implements LifecycleManager {
      * @return 插件URL列表
      */
     private URL[] getURLs(String jarFilePath) {
+        log.info("jarFilePath: ", jarFilePath);
         File file = new File(jarFilePath);
         List<URL> jarPaths = Lists.newArrayList();
         if (file.isDirectory()) {

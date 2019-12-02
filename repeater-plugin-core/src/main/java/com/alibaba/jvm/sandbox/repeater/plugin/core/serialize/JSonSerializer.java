@@ -5,7 +5,7 @@ import com.alibaba.fastjson.serializer.SerializerFeature;
 import org.kohsuke.MetaInfServices;
 
 /**
- * {@link JSonSerializer} hessian序列化实现
+ * {@link JSonSerializer} json序列化实现
  * <p>
  *
  * @author zhaoyb1990
