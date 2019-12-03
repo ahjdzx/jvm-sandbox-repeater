@@ -263,6 +263,35 @@ public class RepeaterModule implements Module, ModuleLifecycle {
     }
 
     /**
+     * 配置推送接口，使用Json格式
+     *
+     * @param req
+     * @param writer
+     */
+    @Command("pushConfigWithJson")
+    public void pushJsonConfig(final Map<String, String> req, final PrintWriter writer) {
+        String data = req.get(Constants.DATA_TRANSPORT_IDENTIFY);
+        if (StringUtils.isEmpty(data)) {
+            writer.write("invalid request, cause parameter {" + Constants.DATA_TRANSPORT_IDENTIFY + "} is required");
+            return;
+        }
+
+        try {
+            RepeaterConfig config = SerializerWrapper.jsonDeserialize(data, RepeaterConfig.class);
+            ApplicationModel.instance().setConfig(config);
+
+            noticeConfigChange(config);
+            writer.write("config push success");
+        } catch (SerializeException e) {
+            writer.write("invalid request, cause deserialize config failed, reason = {" + e.getMessage() + "}");
+        } catch (Exception e) {
+            writer.write(e.getMessage());
+            log.info(e.getMessage());
+        }
+    }
+
+
+    /**
      * 通知配置变更
      *
      * @param config 配置文件
@@ -271,8 +300,6 @@ public class RepeaterModule implements Module, ModuleLifecycle {
         if (initialized.get()) {
             for (InvokePlugin invokePlugin : invokePlugins) {
                 try {
-                    log.info("---");
-                    log.info(invokePlugin.getType().toString());
                     invokePlugin.onConfigChange(config);
                 } catch (PluginLifeCycleException e) {
                     log.error("error occurred when notice config, plugin ={}", invokePlugin.getType().name(), e);

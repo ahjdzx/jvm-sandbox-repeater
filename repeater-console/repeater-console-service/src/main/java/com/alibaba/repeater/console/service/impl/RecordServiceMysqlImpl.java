@@ -3,6 +3,7 @@ package com.alibaba.repeater.console.service.impl;
 import com.alibaba.jvm.sandbox.repeater.plugin.core.serialize.SerializeException;
 import com.alibaba.jvm.sandbox.repeater.plugin.core.wrapper.RecordWrapper;
 import com.alibaba.jvm.sandbox.repeater.plugin.core.wrapper.SerializerWrapper;
+import com.alibaba.jvm.sandbox.repeater.plugin.domain.RecordModel;
 import com.alibaba.jvm.sandbox.repeater.plugin.domain.RepeatModel;
 import com.alibaba.jvm.sandbox.repeater.plugin.domain.RepeaterResult;
 import com.alibaba.repeater.console.dal.mapper.RecordMapper;
@@ -75,6 +76,11 @@ public class RecordServiceMysqlImpl extends AbstractRecordService implements Rec
         Record record = recordMapper.selectByAppNameAndTraceId(appName, traceId);
         if (record == null) {
             return RepeaterResult.builder().success(false).message("data not exits").build();
+        }
+        try {
+            SerializerWrapper.hessianDeserialize(record.getWrapperRecord(), RecordModel.class);
+        } catch (SerializeException e) {
+            e.printStackTrace();
         }
         return RepeaterResult.builder().success(true).message("operate success").data(record.getWrapperRecord()).build();
     }
