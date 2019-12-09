@@ -10,6 +10,7 @@
     <packaging>pom</packaging>
 
     <properties>
+        <nexus.url>http://maven.cheyaoshicorp.com/nexus</nexus.url>
         <sandbox.api.version>1.2.0</sandbox.api.version>
         <metainf-services.version>1.8</metainf-services.version>
         <fastjson.version>1.2.44</fastjson.version>
@@ -26,6 +27,17 @@
         <testng.version>6.14.3</testng.version>
         <commons-csv.version>1.7</commons-csv.version>
     </properties>
+
+    <distributionManagement>
+        <snapshotRepository>
+            <id>archjava</id>
+            <url>${nexus.url}/content/repositories/carkey-archjava-snapshots/</url>
+        </snapshotRepository>
+        <repository>
+            <id>archjava</id>
+            <url>${nexus.url}/content/repositories/carkey-archjava-release/</url>
+        </repository>
+    </distributionManagement>
 
     <modules>
         <module>repeater-plugin-core</module>
