@@ -1,5 +1,6 @@
 package com.alibaba.jvm.sandbox.repeater.module;
 
+import com.alibaba.fastjson.JSONObject;
 import com.alibaba.jvm.sandbox.api.Information;
 import com.alibaba.jvm.sandbox.api.Information.Mode;
 import com.alibaba.jvm.sandbox.api.Module;
@@ -277,11 +278,11 @@ public class RepeaterModule implements Module, ModuleLifecycle {
         }
 
         try {
-            RepeaterConfig config = SerializerWrapper.jsonDeserialize(data, RepeaterConfig.class);
+            RepeaterConfig config = JSONObject.parseObject(data, RepeaterConfig.class);
             // ApplicationModel.instance().setConfig(config);
             noticeConfigChange(config);
             writer.write("config push success");
-        } catch (SerializeException e) {
+        } catch (Exception e) {
             writer.write("invalid request, cause deserialize config failed, reason = {" + e.getMessage() + "}");
             log.error("invalid request, cause deserialize config failed, reason = {}", e.getMessage());
         }

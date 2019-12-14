@@ -65,14 +65,17 @@ public class JavaEntrancePlugin extends AbstractInvokePluginAdapter {
 
     @Override
     public void onConfigChange(RepeaterConfig config) throws PluginLifeCycleException {
+        super.onConfigChange(config);
+
         if (configTemporary != null) {
-            List<Behavior> current = config.getJavaSubInvokeBehaviors();
-            List<Behavior> latest = configTemporary.getJavaSubInvokeBehaviors();
+            List<Behavior> current = config.getJavaEntranceBehaviors();
+            List<Behavior> latest = configTemporary.getJavaEntranceBehaviors();
             this.config = config;
-            if (JavaPluginUtils.hasDifference(current, latest)) {
+            boolean difference = JavaPluginUtils.hasDifference(current, latest);
+            log.info("difference: {}", difference);
+            if (difference) {
                 reWatch0();
             }
         }
-        super.onConfigChange(config);
     }
 }
