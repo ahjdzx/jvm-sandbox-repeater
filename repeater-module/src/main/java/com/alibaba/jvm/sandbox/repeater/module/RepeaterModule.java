@@ -278,15 +278,12 @@ public class RepeaterModule implements Module, ModuleLifecycle {
 
         try {
             RepeaterConfig config = SerializerWrapper.jsonDeserialize(data, RepeaterConfig.class);
-            ApplicationModel.instance().setConfig(config);
-
+            // ApplicationModel.instance().setConfig(config);
             noticeConfigChange(config);
             writer.write("config push success");
         } catch (SerializeException e) {
             writer.write("invalid request, cause deserialize config failed, reason = {" + e.getMessage() + "}");
-        } catch (Exception e) {
-            writer.write(e.getMessage());
-            log.info(e.getMessage());
+            log.error("invalid request, cause deserialize config failed, reason = {}", e.getMessage());
         }
     }
 

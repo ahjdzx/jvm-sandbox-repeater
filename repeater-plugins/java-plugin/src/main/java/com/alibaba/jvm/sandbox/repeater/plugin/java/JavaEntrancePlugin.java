@@ -1,18 +1,18 @@
 package com.alibaba.jvm.sandbox.repeater.plugin.java;
 
-import java.util.List;
-
 import com.alibaba.jvm.sandbox.repeater.plugin.api.InvocationProcessor;
 import com.alibaba.jvm.sandbox.repeater.plugin.core.impl.AbstractInvokePluginAdapter;
 import com.alibaba.jvm.sandbox.repeater.plugin.core.model.EnhanceModel;
 import com.alibaba.jvm.sandbox.repeater.plugin.domain.Behavior;
 import com.alibaba.jvm.sandbox.repeater.plugin.domain.InvokeType;
 import com.alibaba.jvm.sandbox.repeater.plugin.domain.RepeaterConfig;
+import com.alibaba.jvm.sandbox.repeater.plugin.exception.PluginLifeCycleException;
 import com.alibaba.jvm.sandbox.repeater.plugin.spi.InvokePlugin;
-
 import com.google.common.collect.Lists;
 import org.apache.commons.collections4.CollectionUtils;
 import org.kohsuke.MetaInfServices;
+
+import java.util.List;
 
 /**
  * Java入口插件
@@ -27,7 +27,9 @@ public class JavaEntrancePlugin extends AbstractInvokePluginAdapter {
 
     @Override
     protected List<EnhanceModel> getEnhanceModels() {
-        if (config == null || CollectionUtils.isEmpty(config.getJavaEntranceBehaviors())) { return null;}
+        if (config == null || CollectionUtils.isEmpty(config.getJavaEntranceBehaviors())) {
+            return null;
+        }
         List<EnhanceModel> ems = Lists.newArrayList();
         for (Behavior behavior : config.getJavaEntranceBehaviors()) {
             ems.add(EnhanceModel.convert(behavior));
@@ -59,5 +61,18 @@ public class JavaEntrancePlugin extends AbstractInvokePluginAdapter {
     public boolean enable(RepeaterConfig config) {
         this.config = config;
         return super.enable(config);
+    }
+
+    @Override
+    public void onConfigChange(RepeaterConfig config) throws PluginLifeCycleException {
+        if (configTemporary != null) {
+            List<Behavior> current = config.getJavaSubInvokeBehaviors();
+            List<Behavior> latest = configTemporary.getJavaSubInvokeBehaviors();
+            this.config = config;
+            if (JavaPluginUtils.hasDifference(current, latest)) {
+                reWatch0();
+            }
+        }
+        super.onConfigChange(config);
     }
 }
