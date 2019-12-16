@@ -7,11 +7,15 @@ import com.alibaba.jvm.sandbox.repeater.plugin.api.InvocationProcessor;
 import com.alibaba.jvm.sandbox.repeater.plugin.core.impl.AbstractInvokePluginAdapter;
 import com.alibaba.jvm.sandbox.repeater.plugin.core.model.EnhanceModel;
 import com.alibaba.jvm.sandbox.repeater.plugin.domain.InvokeType;
+import com.alibaba.jvm.sandbox.repeater.plugin.domain.RepeaterConfig;
+import com.alibaba.jvm.sandbox.repeater.plugin.exception.PluginLifeCycleException;
 import com.alibaba.jvm.sandbox.repeater.plugin.spi.InvokePlugin;
 import com.google.common.collect.Lists;
 import org.kohsuke.MetaInfServices;
 
+import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * {@link HttpPlugin} http入口流量类型插件
@@ -61,5 +65,20 @@ public class HttpPlugin extends AbstractInvokePluginAdapter {
     @Override
     public boolean isEntrance() {
         return true;
+    }
+
+    @Override
+    public void onConfigChange(RepeaterConfig config) throws PluginLifeCycleException {
+        List<String> current = config.getHttpEntrancePatterns();
+        List<String> latest = configTemporary.getHttpEntrancePatterns();
+
+        current.sort(Comparator.comparing(String::hashCode));
+        latest.sort(Comparator.comparing(String::hashCode));
+
+        if (Objects.deepEquals(current, latest)) {
+            reWatch0();
+        }
+
+        super.onConfigChange(config);
     }
 }

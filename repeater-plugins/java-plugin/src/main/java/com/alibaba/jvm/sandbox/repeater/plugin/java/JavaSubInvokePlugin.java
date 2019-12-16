@@ -1,7 +1,5 @@
 package com.alibaba.jvm.sandbox.repeater.plugin.java;
 
-import java.util.List;
-
 import com.alibaba.jvm.sandbox.repeater.plugin.api.InvocationProcessor;
 import com.alibaba.jvm.sandbox.repeater.plugin.core.impl.AbstractInvokePluginAdapter;
 import com.alibaba.jvm.sandbox.repeater.plugin.core.model.EnhanceModel;
@@ -10,10 +8,11 @@ import com.alibaba.jvm.sandbox.repeater.plugin.domain.InvokeType;
 import com.alibaba.jvm.sandbox.repeater.plugin.domain.RepeaterConfig;
 import com.alibaba.jvm.sandbox.repeater.plugin.exception.PluginLifeCycleException;
 import com.alibaba.jvm.sandbox.repeater.plugin.spi.InvokePlugin;
-
 import com.google.common.collect.Lists;
 import org.apache.commons.collections4.CollectionUtils;
 import org.kohsuke.MetaInfServices;
+
+import java.util.List;
 
 /**
  * java子调用插件
@@ -66,14 +65,16 @@ public class JavaSubInvokePlugin extends AbstractInvokePluginAdapter {
 
     @Override
     public void onConfigChange(RepeaterConfig config) throws PluginLifeCycleException {
+        List<Behavior> current = config.getJavaSubInvokeBehaviors();
+        List<Behavior> latest = null;
         if (configTemporary != null) {
-            List<Behavior> current = config.getJavaSubInvokeBehaviors();
-            List<Behavior> latest = configTemporary.getJavaSubInvokeBehaviors();
-            this.config = config;
-            if (JavaPluginUtils.hasDifference(current, latest)) {
-                reWatch0();
-            }
+            latest = configTemporary.getJavaSubInvokeBehaviors();
         }
+        this.config = config;
+        if (JavaPluginUtils.hasDifference(current, latest)) {
+            reWatch0();
+        }
+
         super.onConfigChange(config);
     }
 }

@@ -279,7 +279,6 @@ public class RepeaterModule implements Module, ModuleLifecycle {
 
         try {
             RepeaterConfig config = JSONObject.parseObject(data, RepeaterConfig.class);
-            // ApplicationModel.instance().setConfig(config);
             noticeConfigChange(config);
             writer.write("config push success");
         } catch (Exception e) {
