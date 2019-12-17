@@ -4,11 +4,9 @@ import com.alibaba.jvm.sandbox.repeater.plugin.domain.Behavior;
 import com.alibaba.jvm.sandbox.repeater.plugin.domain.RepeaterConfig;
 import com.alibaba.jvm.sandbox.repeater.plugin.domain.RepeaterResult;
 import com.google.common.collect.Lists;
-import org.springframework.context.annotation.Bean;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.handler.BeanNameUrlHandlerMapping;
 
 import java.util.List;
 
@@ -28,23 +26,26 @@ public class ConfigFacadeApi {
         // 自己存配置；目前直接Mock了一份
         RepeaterConfig config = new RepeaterConfig();
         List<Behavior> behaviors = Lists.newArrayList();
-        config.setPluginIdentities(Lists.newArrayList("java-entrance", "java-subInvoke", "mybatis", "ibatis", "dubbo-consumer", "dubbo-provider"));
+        config.setPluginIdentities(Lists.newArrayList("http", "java-entrance", "java-subInvoke", "mybatis", "ibatis", "dubbo-consumer", "dubbo-provider"));
         // 回放器
         config.setRepeatIdentities(Lists.newArrayList("java", "http", "dubbo"));
         // 白名单列表
-        config.setHttpEntrancePatterns(Lists.newArrayList("^/regress/.*$"));
+        config.setHttpEntrancePatterns(Lists.newArrayList("^/greeting/.*$"));
         // java入口方法
         // behaviors.add(new Behavior("com.alibaba.repeater.console.service.impl.RegressServiceImpl", "getRegress"));
 //        behaviors.add(new Behavior("com.hellobike.bioauth.service.application.AppBioAuthCoreServiceImpl", "queryUserBioAuthStatus"));
         behaviors.add(new Behavior("hello.GreetingController", "greeting"));
 
         config.setJavaEntranceBehaviors(behaviors);
+
+        // java子调用
         List<Behavior> subBehaviors = Lists.newArrayList();
         // java调用插件
 //        subBehaviors.add(new Behavior("com.alibaba.repeater.console.service.impl.RegressServiceImpl", "getRegressInner"));
 //        subBehaviors.add(new Behavior("com.alibaba.repeater.console.service.impl.RegressServiceImpl", "findPartner"));
 //        subBehaviors.add(new Behavior("com.alibaba.repeater.console.service.impl.RegressServiceImpl", "slogan"));
         config.setJavaSubInvokeBehaviors(subBehaviors);
+        // 开启ttl线程上下文切换
         config.setUseTtl(true);
         return RepeaterResult.builder().success(true).message("operate success").data(config).build();
     }

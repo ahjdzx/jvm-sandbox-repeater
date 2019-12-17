@@ -278,12 +278,15 @@ public class RepeaterModule implements Module, ModuleLifecycle {
         }
 
         try {
+//            Gson gson = new Gson();
+//            RepeaterConfig config = gson.fromJson(data, RepeaterConfig.class);
             RepeaterConfig config = JSONObject.parseObject(data, RepeaterConfig.class);
             noticeConfigChange(config);
             writer.write("config push success");
-        } catch (Exception e) {
+        } catch (Throwable e) {
             writer.write("invalid request, cause deserialize config failed, reason = {" + e.getMessage() + "}");
             log.error("invalid request, cause deserialize config failed, reason = {}", e.getMessage());
+            e.printStackTrace();
         }
     }
 

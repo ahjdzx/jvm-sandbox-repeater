@@ -22,6 +22,9 @@ final class JavaPluginUtils {
      * @return 是否发生变化 true 是  false 否
      */
     static boolean hasDifference(List<Behavior> source, List<Behavior> target) {
+        if (source == null || target == null) {
+            return true;
+        }
         if (CollectionUtils.isEmpty(source) && CollectionUtils.isNotEmpty(target)) {
             return true;
         }

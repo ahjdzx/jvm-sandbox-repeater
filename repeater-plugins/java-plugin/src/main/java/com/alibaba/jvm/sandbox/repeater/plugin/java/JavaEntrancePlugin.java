@@ -71,8 +71,7 @@ public class JavaEntrancePlugin extends AbstractInvokePluginAdapter {
             latest = configTemporary.getJavaEntranceBehaviors();
         }
         this.config = config;
-        boolean difference = JavaPluginUtils.hasDifference(current, latest);
-        if (difference) {
+        if (JavaPluginUtils.hasDifference(current, latest)) {
             reWatch0();
         }
 
