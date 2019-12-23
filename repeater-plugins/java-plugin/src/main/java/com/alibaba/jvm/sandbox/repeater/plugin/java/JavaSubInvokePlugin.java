@@ -66,12 +66,14 @@ public class JavaSubInvokePlugin extends AbstractInvokePluginAdapter {
     @Override
     public void onConfigChange(RepeaterConfig config) throws PluginLifeCycleException {
         List<Behavior> current = config.getJavaSubInvokeBehaviors();
-        List<Behavior> latest = null;
+        List<Behavior> latest = Lists.newArrayList();
         if (configTemporary != null) {
             latest = configTemporary.getJavaSubInvokeBehaviors();
         }
         this.config = config;
-        if (JavaPluginUtils.hasDifference(current, latest)) {
+        boolean difference = JavaPluginUtils.hasDifference(current, latest);
+        log.info("config {} difference: {}, current: {}, latest: {}", identity(), difference, current, latest);
+        if (difference) {
             reWatch0();
         }
 
