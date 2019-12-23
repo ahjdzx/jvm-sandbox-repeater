@@ -42,6 +42,7 @@ import com.alibaba.jvm.sandbox.repeater.plugin.exception.PluginLifeCycleExceptio
 import com.alibaba.jvm.sandbox.repeater.plugin.spi.InvokePlugin;
 import com.alibaba.jvm.sandbox.repeater.plugin.spi.Repeater;
 import com.alibaba.jvm.sandbox.repeater.plugin.spi.SubscribeSupporter;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.kohsuke.MetaInfServices;
 import org.slf4j.Logger;
@@ -260,6 +261,10 @@ public class RepeaterModule implements Module, ModuleLifecycle {
             writer.write("config push success");
         } catch (SerializeException e) {
             writer.write("invalid request, cause deserialize config failed, reason = {" + e.getMessage() + "}");
+            log.error("invalid request, cause deserialize config failed, reason = {}", e.getMessage());
+        } catch (PluginLifeCycleException e) {
+            writer.write(e.getMessage());
+            log.error(e.getMessage());
         }
     }
 
@@ -278,15 +283,12 @@ public class RepeaterModule implements Module, ModuleLifecycle {
         }
 
         try {
-//            Gson gson = new Gson();
-//            RepeaterConfig config = gson.fromJson(data, RepeaterConfig.class);
             RepeaterConfig config = JSONObject.parseObject(data, RepeaterConfig.class);
             noticeConfigChange(config);
             writer.write("config push success");
-        } catch (Throwable e) {
-            writer.write("invalid request, cause deserialize config failed, reason = {" + e.getMessage() + "}");
-            log.error("invalid request, cause deserialize config failed, reason = {}", e.getMessage());
-            e.printStackTrace();
+        } catch (PluginLifeCycleException e) {
+            writer.write(e.getMessage());
+            log.error(e.getMessage());
         }
     }
 
@@ -296,14 +298,31 @@ public class RepeaterModule implements Module, ModuleLifecycle {
      *
      * @param config 配置文件
      */
-    private void noticeConfigChange(final RepeaterConfig config) {
+    private void noticeConfigChange(final RepeaterConfig config) throws PluginLifeCycleException {
         if (initialized.get()) {
+
+            // 插件配置校验
             for (InvokePlugin invokePlugin : invokePlugins) {
-                try {
-                    invokePlugin.onConfigChange(config);
-                } catch (PluginLifeCycleException e) {
-                    log.error("error occurred when notice config, plugin ={}", invokePlugin.getType().name(), e);
+                if (config != null && config.getPluginIdentities().contains(invokePlugin.identity())) {
+                    if (invokePlugin.identity().equals("java-entrance")) {
+                        if (CollectionUtils.isEmpty(config.getJavaEntranceBehaviors())) {
+                            throw new PluginLifeCycleException("enhance models is empty, plugin type is " + invokePlugin.identity());
+                        }
+                    }
+                    if (invokePlugin.identity().equals("java-subInvoke")) {
+                        if (CollectionUtils.isEmpty(config.getJavaSubInvokeBehaviors())) {
+                            throw new PluginLifeCycleException("enhance models is empty, plugin type is " + invokePlugin.identity());
+                        }
+                    }
                 }
+            }
+        }
+
+        for (InvokePlugin invokePlugin : invokePlugins) {
+            try {
+                invokePlugin.onConfigChange(config);
+            } catch (PluginLifeCycleException e) {
+                log.error("error occurred when notice config, plugin ={}", invokePlugin.getType().name(), e);
             }
         }
     }
