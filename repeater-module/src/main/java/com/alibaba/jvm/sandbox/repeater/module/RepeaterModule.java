@@ -301,8 +301,8 @@ public class RepeaterModule implements Module, ModuleLifecycle {
     private void noticeConfigChange(final RepeaterConfig config) throws PluginLifeCycleException {
         if (initialized.get()) {
 
-            // 插件配置校验
             for (InvokePlugin invokePlugin : invokePlugins) {
+                // 插件配置校验
                 if (config != null && config.getPluginIdentities().contains(invokePlugin.identity())) {
                     if (invokePlugin.identity().equals("java-entrance")) {
                         if (CollectionUtils.isEmpty(config.getJavaEntranceBehaviors())) {
@@ -315,14 +315,12 @@ public class RepeaterModule implements Module, ModuleLifecycle {
                         }
                     }
                 }
-            }
-        }
-
-        for (InvokePlugin invokePlugin : invokePlugins) {
-            try {
-                invokePlugin.onConfigChange(config);
-            } catch (PluginLifeCycleException e) {
-                log.error("error occurred when notice config, plugin ={}", invokePlugin.getType().name(), e);
+                // 配置通知
+                try {
+                    invokePlugin.onConfigChange(config);
+                } catch (PluginLifeCycleException e) {
+                    log.error("error occurred when notice config, plugin ={}", invokePlugin.getType().name(), e);
+                }
             }
         }
     }
