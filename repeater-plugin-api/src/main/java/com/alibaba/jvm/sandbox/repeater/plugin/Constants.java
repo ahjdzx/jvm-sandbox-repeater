@@ -9,6 +9,16 @@ package com.alibaba.jvm.sandbox.repeater.plugin;
 public class Constants {
 
     /**
+     * 应用名称
+     */
+    public static final String APP_NAME = "app.name";
+
+    /**
+     * 环境
+     */
+    public static final String ENV = "env";
+
+    /**
      * console与module通信数据传输字段
      */
     public static final String DATA_TRANSPORT_IDENTIFY = "_data";

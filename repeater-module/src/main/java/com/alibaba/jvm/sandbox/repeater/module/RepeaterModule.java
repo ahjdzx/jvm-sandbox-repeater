@@ -34,6 +34,7 @@ import com.alibaba.jvm.sandbox.repeater.plugin.core.spring.SpringContextInnerCon
 import com.alibaba.jvm.sandbox.repeater.plugin.core.trace.TtlConcurrentAdvice;
 import com.alibaba.jvm.sandbox.repeater.plugin.core.util.ExecutorInner;
 import com.alibaba.jvm.sandbox.repeater.plugin.core.util.PathUtils;
+import com.alibaba.jvm.sandbox.repeater.plugin.core.util.PropertyUtil;
 import com.alibaba.jvm.sandbox.repeater.plugin.core.wrapper.SerializerWrapper;
 import com.alibaba.jvm.sandbox.repeater.plugin.domain.RepeatMeta;
 import com.alibaba.jvm.sandbox.repeater.plugin.domain.RepeaterConfig;
@@ -102,6 +103,11 @@ public class RepeaterModule implements Module, ModuleLifecycle {
             SpringContextInnerContainer.setAgentLaunch(true);
             SpringInstantiateAdvice.watcher(this.eventWatcher).watch();
             moduleController.active();
+        }
+        if (mode == Mode.ATTACH) {
+            log.info("attach launch mode");
+            ApplicationModel.instance().setAppName(PropertyUtil.getPropertyOrDefault(Constants.APP_NAME, ""));
+            ApplicationModel.instance().setEnvironment(PropertyUtil.getPropertyOrDefault(Constants.ENV, ""));
         }
     }
 
@@ -304,12 +310,12 @@ public class RepeaterModule implements Module, ModuleLifecycle {
             for (InvokePlugin invokePlugin : invokePlugins) {
                 // 插件配置校验
                 if (config != null && config.getPluginIdentities().contains(invokePlugin.identity())) {
-                    if (invokePlugin.identity().equals("java-entrance")) {
+                    if ("java-entrance".equals(invokePlugin.identity())) {
                         if (CollectionUtils.isEmpty(config.getJavaEntranceBehaviors())) {
                             throw new PluginLifeCycleException("enhance models is empty, plugin type is " + invokePlugin.identity());
                         }
                     }
-                    if (invokePlugin.identity().equals("java-subInvoke")) {
+                    if ("java-subInvoke".equals(invokePlugin.identity())) {
                         if (CollectionUtils.isEmpty(config.getJavaSubInvokeBehaviors())) {
                             throw new PluginLifeCycleException("enhance models is empty, plugin type is " + invokePlugin.identity());
                         }

@@ -23,6 +23,8 @@ public class ConfigFacadeApi {
     @RequestMapping("/config/{appName}/{env}")
     public RepeaterResult<RepeaterConfig> getConfig(@PathVariable("appName") String appName,
                                                     @PathVariable("env") String env) {
+        System.out.println("appName: " + appName + ", env: " + env);
+
         // 自己存配置；目前直接Mock了一份
         RepeaterConfig config = new RepeaterConfig();
         List<Behavior> behaviors = Lists.newArrayList();
@@ -32,18 +34,18 @@ public class ConfigFacadeApi {
         // 白名单列表
         config.setHttpEntrancePatterns(Lists.newArrayList("^/greeting/.*$"));
         // java入口方法
-        // behaviors.add(new Behavior("com.alibaba.repeater.console.service.impl.RegressServiceImpl", "getRegress"));
+        behaviors.add(new Behavior("com.alibaba.repeater.console.service.impl.RegressServiceImpl", "getRegress"));
 //        behaviors.add(new Behavior("com.hellobike.bioauth.service.application.AppBioAuthCoreServiceImpl", "queryUserBioAuthStatus"));
-        behaviors.add(new Behavior("hello.GreetingController", "greeting"));
+//        behaviors.add(new Behavior("hello.GreetingController", "greeting"));
 
         config.setJavaEntranceBehaviors(behaviors);
 
         // java子调用
         List<Behavior> subBehaviors = Lists.newArrayList();
         // java调用插件
-//        subBehaviors.add(new Behavior("com.alibaba.repeater.console.service.impl.RegressServiceImpl", "getRegressInner"));
-//        subBehaviors.add(new Behavior("com.alibaba.repeater.console.service.impl.RegressServiceImpl", "findPartner"));
-//        subBehaviors.add(new Behavior("com.alibaba.repeater.console.service.impl.RegressServiceImpl", "slogan"));
+        subBehaviors.add(new Behavior("com.alibaba.repeater.console.service.impl.RegressServiceImpl", "getRegressInner"));
+        subBehaviors.add(new Behavior("com.alibaba.repeater.console.service.impl.RegressServiceImpl", "findPartner"));
+        subBehaviors.add(new Behavior("com.alibaba.repeater.console.service.impl.RegressServiceImpl", "slogan"));
         config.setJavaSubInvokeBehaviors(subBehaviors);
         // 开启ttl线程上下文切换
         config.setUseTtl(true);
