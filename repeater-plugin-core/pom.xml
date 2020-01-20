@@ -13,6 +13,11 @@
 
     <dependencies>
         <dependency>
+            <groupId>com.hellobike.hms</groupId>
+            <artifactId>hms-sdk</artifactId>
+        </dependency>
+
+        <dependency>
             <groupId>com.alibaba.jvm.sandbox</groupId>
             <artifactId>sandbox-api</artifactId>
             <scope>provided</scope>

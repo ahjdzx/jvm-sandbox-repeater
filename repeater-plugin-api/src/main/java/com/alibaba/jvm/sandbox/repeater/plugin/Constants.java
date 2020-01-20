@@ -44,6 +44,16 @@ public class Constants {
     public static final String DEFAULT_RECORD_BROADCASTER = "broadcaster.record.url";
 
     /**
+     * 异步方式录制消息投递的topic
+     */
+    public static final String DEFAULT_RECORD_BROADCASTER_TOPIC = "broadcaster.record.topic";
+
+    /**
+     * 异步方式回放消息投递的topic
+     */
+    public static final String DEFAULT_REPEAT_BROADCASTER_TOPIC = "broadcaster.repeat.topic";
+
+    /**
      * 是否开启单机工作模式
      */
     public static final String REPEAT_STANDALONE_MODE = "repeat.standalone.mode";

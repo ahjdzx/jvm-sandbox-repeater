@@ -3,8 +3,8 @@ package com.alibaba.jvm.sandbox.repeater.plugin.core;
 import com.alibaba.jvm.sandbox.repeater.plugin.Constants;
 import com.alibaba.jvm.sandbox.repeater.plugin.api.Broadcaster;
 import com.alibaba.jvm.sandbox.repeater.plugin.api.ConfigManager;
-import com.alibaba.jvm.sandbox.repeater.plugin.core.impl.api.DefaultBroadcaster;
 import com.alibaba.jvm.sandbox.repeater.plugin.core.impl.api.DefaultConfigManager;
+import com.alibaba.jvm.sandbox.repeater.plugin.core.impl.async.AsyncBroadcaster;
 import com.alibaba.jvm.sandbox.repeater.plugin.core.impl.standalone.StandaloneBroadcaster;
 import com.alibaba.jvm.sandbox.repeater.plugin.core.impl.standalone.StandaloneConfigManager;
 import com.alibaba.jvm.sandbox.repeater.plugin.core.util.PropertyUtil;
@@ -25,7 +25,7 @@ public class StandaloneSwitch {
 
     private Broadcaster broadcaster;
 
-    public static StandaloneSwitch instance(){
+    public static StandaloneSwitch instance() {
         return instance;
     }
 
@@ -36,7 +36,7 @@ public class StandaloneSwitch {
             configManager = new StandaloneConfigManager();
         } else {
             configManager = new DefaultConfigManager();
-            broadcaster = new DefaultBroadcaster();
+            broadcaster = new AsyncBroadcaster();
         }
     }
 
